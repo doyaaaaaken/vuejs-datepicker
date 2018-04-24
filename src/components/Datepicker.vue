@@ -40,7 +40,7 @@
                   @click="isRtl ? nextMonth() : previousMonth()"
                   class="prev"
                   v-bind:class="{ 'disabled' : isRtl ? nextMonthDisabled(pageTimestamp) : previousMonthDisabled(pageTimestamp) }">&lt;</span>
-              <span @click="showMonthCalendar" :class="allowedToShowView('month') ? 'up' : ''">{{ isYmd ? currYear : currMonthName }} {{ isYmd ? currMonthName : currYear }}</span>
+              <span @click="showMonthCalendar" :class="allowedToShowView('month') ? 'up' : ''">{{ isYmd ? currYearName : currMonthName }} {{ isYmd ? currMonthName : currYearName }}</span>
               <span
                   @click="isRtl ? previousMonth() : nextMonth()"
                   class="next"
@@ -69,7 +69,7 @@
                   @click="previousYear"
                   class="prev"
                   v-bind:class="{ 'disabled' : previousYearDisabled(pageTimestamp) }">&lt;</span>
-              <span @click="showYearCalendar" :class="allowedToShowView('year') ? 'up' : ''">{{ getPageYear() }}</span>
+              <span @click="showYearCalendar" :class="allowedToShowView('year') ? 'up' : ''">{{ getPageYear() + yearSuffix }}</span>
               <span
                   @click="nextYear"
                   class="next"
@@ -225,8 +225,8 @@ export default {
       const monthName = this.fullMonthName ? this.translation.months.original : this.translation.months.abbr
       return DateUtils.getMonthNameAbbr(this.pageDate.getMonth(), monthName)
     },
-    currYear () {
-      return this.pageDate.getFullYear()
+    currYearName () {
+      return this.pageDate.getFullYear() + this.yearSuffix
     },
     /**
      * Returns the day number of the week less one for the first of the current month
@@ -321,6 +321,9 @@ export default {
     },
     isYmd () {
       return this.translation.ymd === true
+    },
+    yearSuffix () {
+      return this.translation.yearSuffix ? this.translation.yearSuffix : ''
     }
   },
   methods: {
@@ -502,7 +505,7 @@ export default {
     getPageDecade () {
       const decadeStart = Math.floor(this.pageDate.getFullYear() / 10) * 10
       const decadeEnd = decadeStart + 9
-      return `${decadeStart} - ${decadeEnd}`
+      return `${decadeStart} - ${decadeEnd}${this.yearSuffix}`
     },
     changeMonth (incrementBy) {
       let date = this.pageDate
